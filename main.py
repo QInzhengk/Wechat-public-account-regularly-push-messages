@@ -16,7 +16,8 @@ birthday = os.environ['BIRTHDAY']
 app_id = os.environ["APP_ID"]
 app_secret = os.environ["APP_SECRET"]
 # 用户ID和模板ID
-user_id = os.environ["USER_ID"]
+user_id1 = os.environ["USER_ID1"]
+user_id2 = os.environ["USER_ID2"]
 template_id = os.environ["TEMPLATE_ID"]
 
 # 可通过下列代码在本地调试
@@ -85,7 +86,7 @@ data = {
     "birthday_left": {"value": get_birthday(), "color": get_random_color()},
     "words": {"value": get_words(), "color": get_random_color()}
         }
-print(user_id)
-for user in user_id:
-    res = wm.send_template(user, template_id, data)
-    print(res)
+
+res1 = wm.send_template(user_id1, template_id, data)
+res2 = wm.send_template(user_id2, template_id, data)
+print(res1, res2)
