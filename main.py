@@ -85,7 +85,7 @@ data = {
     "birthday_left": {"value": get_birthday(), "color": get_random_color()},
     "words": {"value": get_words(), "color": get_random_color()}
         }
-
+print(user_id)
 for user in user_id:
     res = wm.send_template(user, template_id, data)
     print(res)
