@@ -9,7 +9,7 @@ from wechatpy.client.api import WeChatMessage, WeChatTemplate
 
 today = datetime.now()
 city = os.environ['CITY']
-#
+
 start_date = os.environ['START_DATE']
 birthday = os.environ['BIRTHDAY']
 # 微信公众测试号ID和SECRET
@@ -19,6 +19,16 @@ app_secret = os.environ["APP_SECRET"]
 user_id = os.environ["USER_ID"]
 template_id = os.environ["TEMPLATE_ID"]
 
+# 可通过下列代码在本地调试
+# start_date = "2022-06-06"
+# birthday = "05-20"
+# # 微信公众测试号ID和SECRET
+# app_id = ""
+# app_secret = ""
+# # 用户ID和模板ID
+# user_id = ""
+# template_id = ""
+
 
 # 获取天气和温度
 def get_weather():
@@ -26,6 +36,11 @@ def get_weather():
     res = requests.get(url).json()
     weather = res['data']['list'][0]
     return weather['weather'], math.floor(weather['temp'])
+
+
+# 当前城市、日期
+def get_city_date():
+    return city, today.date().strftime("%Y-%m-%d")
 
 
 # 距离设置的日期过了多少天
@@ -59,8 +74,11 @@ client = WeChatClient(app_id, app_secret)
 wm = WeChatMessage(client)
 
 wea, temperature = get_weather()
+city_q, date_q = get_city_date()
 
 data = {
+    "city": {"value": city_q, "color": get_random_color()},
+    "date": {"value": date_q, "color": get_random_color()},
     "weather": {"value": wea, "color": get_random_color()},
     "temperature": {"value": temperature, "color": get_random_color()},
     "love_days": {"value": get_count(), "color": get_random_color()},
@@ -68,5 +86,6 @@ data = {
     "words": {"value": get_words(), "color": get_random_color()}
         }
 
-res = wm.send_template(user_id, template_id, data)
-print(res)
+for user in user_id:
+    res = wm.send_template(user, template_id, data)
+    print(res)
