@@ -26,14 +26,14 @@ user1 = {
 }
 user2 = {
     'city': '秦皇岛',
-    'start_date': "2022-10-24",
+    'start_date': "2022-10-23",
     'birthday': "11-08",
     'user_id': os.environ["USER_ID2"],
     'template_id': os.environ["TEMPLATE_ID"]
 }
 user3 = {
     'city': '秦皇岛',
-    'start_date': "2004-11-11",
+    'start_date': "2004-11-10",
     'birthday': "11-11",
     'user_id': os.environ["USER_ID3"],
     'template_id': os.environ["TEMPLATE_ID"]
