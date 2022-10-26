@@ -17,14 +17,14 @@ app_secret = os.environ["APP_SECRET"]
 if today.date().strftime("%d") == '15':
     user0 = {
         'city': '北京',
-        'solary_date': '15',
+        'solary': '15',
         'user_id': os.environ["USER_ID0"],
         'template_id': os.environ["TEMPLATE_ID0"]
     }
 else:
     user0 = {
         'city': '北京',
-        'solary_date': '15',
+        'solary': '15',
         'user_id': os.environ["USER_ID0"],
         'template_id': os.environ["TEMPLATE_ID1"]
     }
@@ -71,8 +71,8 @@ def get_count(start_date):
 
 
 # 距离发工资还有多少天
-def get_solary(solary_date):
-    next = datetime.strptime(str(date.today().year) + "-" + str(date.today().month) + "-" + solary_date, "%Y-%m-%d")
+def get_solary(solary):
+    next = datetime.strptime(str(date.today().year) + "-" + str(date.today().month) + "-" + solary, "%Y-%m-%d")
     if next < datetime.now():
         next = next.replace(month=next.month + 1)
     return (next - today).days
@@ -111,7 +111,7 @@ for user in [user0]:
         "date": {"value": date_q, "color": get_random_color()},
         "weather": {"value": wea, "color": get_random_color()},
         "temperature": {"value": temperature, "color": get_random_color()},
-        "solary_date": {"value": get_solary(user['solary_date']), "color": get_random_color()},
+        "solary": {"value": get_solary(user['solary']), "color": get_random_color()},
         "words": {"value": get_words(), "color": get_random_color()}
             }
 
