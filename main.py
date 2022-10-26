@@ -12,11 +12,22 @@ today = datetime.now()
 # 微信公众测试号ID和SECRET
 app_id = os.environ["APP_ID"]
 app_secret = os.environ["APP_SECRET"]
-# # 用户ID和模板ID
-# user_id = os.environ["USER_ID"]
-# template_id = os.environ["TEMPLATE_ID"]
 
 # 可把os.environ结果替换成字符串在本地调试
+if today.date().strftime("%d") == '15':
+    user0 = {
+        'city': '北京',
+        'solary_date': '15',
+        'user_id': os.environ["USER_ID0"],
+        'template_id': os.environ["TEMPLATE_ID0"]
+    }
+else:
+    user0 = {
+        'city': '北京',
+        'solary_date': '15',
+        'user_id': os.environ["USER_ID0"],
+        'template_id': os.environ["TEMPLATE_ID1"]
+    }
 user1 = {
     'city': '北京',
     'start_date': "2022-02-15",
@@ -26,14 +37,14 @@ user1 = {
 }
 user2 = {
     'city': '秦皇岛',
-    'start_date': "2022-10-23",
+    'start_date': "2022-10-24",
     'birthday': "11-08",
     'user_id': os.environ["USER_ID2"],
     'template_id': os.environ["TEMPLATE_ID"]
 }
 user3 = {
     'city': '秦皇岛',
-    'start_date': "2004-11-10",
+    'start_date': "2004-11-11",
     'birthday': "11-11",
     'user_id': os.environ["USER_ID3"],
     'template_id': os.environ["TEMPLATE_ID"]
@@ -57,6 +68,14 @@ def get_city_date(city):
 def get_count(start_date):
     delta = today - datetime.strptime(start_date, "%Y-%m-%d")
     return delta.days
+
+
+# 距离发工资还有多少天
+def get_solary(solary_date):
+    next = datetime.strptime(str(date.today().year) + "-" + str(date.today().month) + "-" + solary_date, "%Y-%m-%d")
+    if next < datetime.now():
+        next = next.replace(month=next.month + 1)
+    return (next - today).days
 
 
 # 距离过生日还有多少天
@@ -84,6 +103,19 @@ client = WeChatClient(app_id, app_secret)
 wm = WeChatMessage(client)
 
 
+for user in [user0]:
+    wea, temperature = get_weather(user['city'])
+    data = {
+        "weather": {"value": wea, "color": get_random_color()},
+        "temperature": {"value": temperature, "color": get_random_color()},
+        "solary_date": {"value": get_solary(user['solary_date']), "color": get_random_color()},
+        "words": {"value": get_words(), "color": get_random_color()}
+            }
+
+    res = wm.send_template(user['user_id'], user['template_id'], data)
+    print(res)
+
+
 for user in [user1, user2, user3]:
     wea, temperature = get_weather(user['city'])
     city_q, date_q = get_city_date(user['city'])
@@ -96,6 +128,6 @@ for user in [user1, user2, user3]:
         "birthday_left": {"value": get_birthday(user['birthday']), "color": get_random_color()},
         "words": {"value": get_words(), "color": get_random_color()}
             }
-    
+
     res = wm.send_template(user['user_id'], user['template_id'], data)
     print(res)
