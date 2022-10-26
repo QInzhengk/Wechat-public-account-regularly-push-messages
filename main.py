@@ -105,7 +105,10 @@ wm = WeChatMessage(client)
 
 for user in [user0]:
     wea, temperature = get_weather(user['city'])
+    city_q, date_q = get_city_date(user['city'])
     data = {
+        "city": {"value": city_q, "color": get_random_color()},
+        "date": {"value": date_q, "color": get_random_color()},
         "weather": {"value": wea, "color": get_random_color()},
         "temperature": {"value": temperature, "color": get_random_color()},
         "solary_date": {"value": get_solary(user['solary_date']), "color": get_random_color()},
