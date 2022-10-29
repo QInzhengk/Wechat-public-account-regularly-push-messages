@@ -14,41 +14,12 @@ app_id = os.environ["APP_ID"]
 app_secret = os.environ["APP_SECRET"]
 
 # 可把os.environ结果替换成字符串在本地调试
-if today.date().strftime("%d") == '15':
-    user0 = {
-        'city': '北京',
-        'solary': '15',
-        'user_id': os.environ["USER_ID0"],
-        'template_id': os.environ["TEMPLATE_ID0"]
-    }
-else:
-    user0 = {
-        'city': '北京',
-        'solary': '15',
-        'user_id': os.environ["USER_ID0"],
-        'template_id': os.environ["TEMPLATE_ID1"]
-    }
-user1 = {
-    'city': '北京',
-    'start_date': "2022-02-15",
-    'birthday': "02-15",
-    'user_id': os.environ["USER_ID1"],
-    'template_id': os.environ["TEMPLATE_ID"]
-}
-user2 = {
-    'city': '秦皇岛',
-    'start_date': "2022-10-24",
-    'birthday': "11-08",
-    'user_id': os.environ["USER_ID2"],
-    'template_id': os.environ["TEMPLATE_ID"]
-}
-user3 = {
-    'city': '秦皇岛',
-    'start_date': "2004-11-11",
-    'birthday': "11-11",
-    'user_id': os.environ["USER_ID3"],
-    'template_id': os.environ["TEMPLATE_ID"]
-}
+user_ids = os.environ["USER_ID"].split(',')
+template_ids = os.environ["TEMPLATE_ID"].split(',')
+citys = os.environ["CITY"].split(',')
+solarys = os.environ["SOLARY"].split(',')
+start_dates = os.environ["START_DATE"].split(',')
+birthdays = os.environ["BIRTHDAY"].split(',')
 
 
 # 获取天气和温度
@@ -98,40 +69,26 @@ def get_words():
 def get_random_color():
     return "#%06x" % random.randint(0, 0xFFFFFF)
 
-print(len(os.environ["USER_ID0"].split(',')))
-exit()
+
 client = WeChatClient(app_id, app_secret)
 wm = WeChatMessage(client)
 
-
-for user in [user0]:
-    wea, temperature = get_weather(user['city'])
-    city_q, date_q = get_city_date(user['city'])
+for i in range(len(user_ids)):
+    wea, tem = get_weather(citys[i])
+    cit, dat = get_city_date(citys[i])
     data = {
-        "city": {"value": city_q, "color": get_random_color()},
-        "date": {"value": date_q, "color": get_random_color()},
-        "weather": {"value": wea, "color": get_random_color()},
-        "temperature": {"value": temperature, "color": get_random_color()},
-        "solary": {"value": get_solary(user['solary']), "color": get_random_color()},
+        "date": {"value": "今日日期:{}".format(dat), "color": get_random_color()},
+        "city": {"value": "当前城市:{}".format(cit), "color": get_random_color()},
+        "weather": {"value": "今日天气:{}".format(wea), "color": get_random_color()},
+        "temperature": {"value": "当前温度:{}".format(tem), "color": get_random_color()},
+        "love_days": {"value": "今天是你们在一起的第{}天".format(get_count(start_dates[i])), "color": get_random_color()},
+        "birthday_left": {"value": "距离她的生日还有{}天".format(get_birthday(birthdays[i])), "color": get_random_color()},
+        "solary": {"value": "距离发工资还有{}天".format(get_solary(solarys[i])), "color": get_random_color()},
         "words": {"value": get_words(), "color": get_random_color()}
-            }
-
-    res = wm.send_template(user['user_id'], user['template_id'], data)
-    print(res)
-
-
-for user in [user1, user2, user3]:
-    wea, temperature = get_weather(user['city'])
-    city_q, date_q = get_city_date(user['city'])
-    data = {
-        "city": {"value": city_q, "color": get_random_color()},
-        "date": {"value": date_q, "color": get_random_color()},
-        "weather": {"value": wea, "color": get_random_color()},
-        "temperature": {"value": temperature, "color": get_random_color()},
-        "love_days": {"value": get_count(user['start_date']), "color": get_random_color()},
-        "birthday_left": {"value": get_birthday(user['birthday']), "color": get_random_color()},
-        "words": {"value": get_words(), "color": get_random_color()}
-            }
-
-    res = wm.send_template(user['user_id'], user['template_id'], data)
+    }
+    if get_birthday(birthdays[i]) == 0:
+        data["birthday_left"]['value'] = "今天是她的生日哦，快去一起甜蜜吧"
+    if get_solary(solarys[i]) == 15:
+        data["solary"]['value'] = "今天发工资啦，快去犒劳一下自己吧"
+    res = wm.send_template(user_ids[i], template_ids[i], data)
     print(res)
