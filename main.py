@@ -88,7 +88,7 @@ for i in range(len(user_ids)):
     }
     if get_birthday(birthdays[i]) == 0:
         data["birthday_left"]['value'] = "今天是她的生日哦，快去一起甜蜜吧"
-    if get_solary(solarys[i]) == 15:
+    if get_solary(solarys[i]) == 0:
         data["solary"]['value'] = "今天发工资啦，快去犒劳一下自己吧"
     res = wm.send_template(user_ids[i], template_ids[i], data)
     print(res)
