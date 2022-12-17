@@ -46,6 +46,8 @@ def get_solary(solary):
     next = datetime.strptime(str(date.today().year) + "-" + str(date.today().month) + "-" + solary, "%Y-%m-%d")
     if next < datetime.now():
         next = next.replace(month=(next.month + 1) % 12)
+        if next.month == 12:
+            next = next.replace(year=next.year + 1)
     return (next - today).days
 
 
