@@ -45,7 +45,7 @@ def get_count(start_date):
 def get_solary(solary):
     next = datetime.strptime(str(date.today().year) + "-" + str(date.today().month) + "-" + solary, "%Y-%m-%d")
     if next < datetime.now():
-        next = next.replace(month=next.month + 1)
+        next = next.replace(month=(next.month + 1) % 12)
     return (next - today).days
 
 
